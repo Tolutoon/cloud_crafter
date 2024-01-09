@@ -1,14 +1,43 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:weather_app/add_weather_info.dart';
 import 'package:weather_app/hourly_weather_item.dart';
 import 'package:http/http.dart' as http;
+import 'package:weather_app/secrets.dart';
 
-class WeatherScreen extends StatelessWidget {
+class WeatherScreen extends StatefulWidget {
   const WeatherScreen({Key? key});
 
+  @override
+  State<WeatherScreen> createState() => _WeatherScreenState();
+}
+
+class _WeatherScreenState extends State<WeatherScreen> {
+  double temp = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentWeather();
+  }
+
   Future getCurrentWeather() async {
-    http.get(Uri.parse(
-        'https://api.openweathermap.org/data/2.5/weather?q=Lagos&appid=34a25ed6886d631e5e0316f568d5ada7'));
+    try {
+      String cityName = 'Lagos';
+      final res = await http.get(Uri.parse(
+          'https://api.openweathermap.org/data/2.5/forecast?q=$cityName&appid=$openWeatherAPIKey'));
+      final data = jsonDecode(res.body);
+
+      if (data['cod'] != '200') {
+        throw 'An unexpected error occured';
+      }
+      setState(() {
+        temp = data['list'][0]['main']['temp'];
+      });
+    } catch (e) {
+      throw e.toString();
+    }
   }
 
   @override
@@ -29,8 +58,8 @@ class WeatherScreen extends StatelessWidget {
           )
         ],
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
+      body: temp == 0 ? const CircularProgressIndicator() : Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -39,25 +68,25 @@ class WeatherScreen extends StatelessWidget {
               width: double.infinity,
               child: Card(
                 child: Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
                       Text(
-                        '300K',
-                        style: TextStyle(
+                        '$temp k',
+                        style: const TextStyle(
                             fontSize: 32, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 16,
                       ),
-                      Icon(
+                      const Icon(
                         Icons.cloud,
                         size: 48,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 16,
                       ),
-                      Text(
+                      const Text(
                         'Rain',
                         style: TextStyle(fontSize: 30),
                       )
@@ -66,20 +95,20 @@ class WeatherScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
-            Align(
+            const Align(
               alignment: Alignment.bottomLeft,
               child: Text(
                 'Weather Forecast',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
-            SingleChildScrollView(
+            const SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
@@ -111,17 +140,17 @@ class WeatherScreen extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
-            Text(
+            const Text(
               'Additional Information',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 AdditionalWeatherInfo(
