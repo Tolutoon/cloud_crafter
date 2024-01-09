@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/add_weather_info.dart';
+import 'package:weather_app/hourly_weather_item.dart';
+import 'package:http/http.dart' as http;
 
 class WeatherScreen extends StatelessWidget {
   const WeatherScreen({Key? key});
+
+  Future getCurrentWeather() async {
+    http.get(Uri.parse(
+        'https://api.openweathermap.org/data/2.5/weather?q=Lagos&appid=34a25ed6886d631e5e0316f568d5ada7'));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +29,8 @@ class WeatherScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: const Padding(
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -31,11 +39,11 @@ class WeatherScreen extends StatelessWidget {
               width: double.infinity,
               child: Card(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(16.0),
                   child: Column(
                     children: [
                       Text(
-                        '300°F',
+                        '300K',
                         style: TextStyle(
                             fontSize: 32, fontWeight: FontWeight.bold),
                       ),
@@ -71,149 +79,68 @@ class WeatherScreen extends StatelessWidget {
             SizedBox(
               height: 16,
             ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 100,
-                  child: Card(
-                    elevation: 6,
-                    child: Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        children: [
-                          Text(
-                            '03:00',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Icon(
-                            Icons.cloud,
-                            size: 32,
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Text('301.62'),
-                        ],
-                      ),
-                    ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  HourlyWeather(
+                    time: '3:00',
+                    temperature: '250',
+                    icon: Icons.cloud,
                   ),
-                ),
-                SizedBox(
-                  width: 100,
-                  child: Card(
-                    elevation: 6,
-                    child: Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        children: [
-                          Text(
-                            '03:00',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Icon(
-                            Icons.cloud,
-                            size: 32,
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Text('301.62'),
-                        ],
-                      ),
-                    ),
+                  HourlyWeather(
+                    time: '4:00',
+                    temperature: '300',
+                    icon: Icons.sunny,
                   ),
-                ),
-                SizedBox(
-                  width: 100,
-                  child: Card(
-                    elevation: 6,
-                    child: Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        children: [
-                          Text(
-                            '03:00',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Icon(
-                            Icons.cloud,
-                            size: 32,
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Text('301.62'),
-                        ],
-                      ),
-                    ),
+                  HourlyWeather(
+                    time: '4:00',
+                    temperature: '300',
+                    icon: Icons.cloud,
                   ),
-                ),
-                SizedBox(
-                  width: 100,
-                  child: Card(
-                    elevation: 6,
-                    child: Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        children: [
-                          Text(
-                            '03:00',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Icon(
-                            Icons.cloud,
-                            size: 32,
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Text('301.62'),
-                        ],
-                      ),
-                    ),
+                  HourlyWeather(
+                    time: '4:00',
+                    temperature: '300',
+                    icon: Icons.sunny,
                   ),
-                ),
-              ],
-            ),
-            // weather forecast cards
-            Placeholder(
-              fallbackHeight: 150,
+                  HourlyWeather(
+                    time: '4:00',
+                    temperature: '300',
+                    icon: Icons.cloud,
+                  ),
+                ],
+              ),
             ),
             SizedBox(
               height: 20,
             ),
-            // additional information
-            Placeholder(
-              fallbackHeight: 150,
+            Text(
+              'Additional Information',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                AdditionalWeatherInfo(
+                  icon: Icons.water_drop,
+                  label: 'Humidity',
+                  value: '98',
+                ),
+                AdditionalWeatherInfo(
+                  icon: Icons.air,
+                  label: 'Wind Speed',
+                  value: '7.5',
+                ),
+                AdditionalWeatherInfo(
+                  icon: Icons.beach_access,
+                  label: 'Pressure',
+                  value: '1000',
+                ),
+              ],
+            )
           ],
         ),
       ),
